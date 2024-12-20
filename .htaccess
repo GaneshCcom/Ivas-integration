@@ -1,0 +1,19 @@
+RewriteEngine on
+RewriteBase /ivas-integration/
+RewriteCond $1 !^(index\.php|resources|robots\.txt)   
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L,QSA] 
+
+
+# Redirect 301 /electricals/blogs/detail/five-tips-for-choosing-the-best-ceiling-fan-this-summer/ https://www.ivas.homes/blog/five-tips-for-choosing-the-best-ceiling-fan-this-summer/
+# Redirect 301 /electricals/blogs/detail/3-easy-ways-to-find-the-right-lighting-solution-for-your-space/ https://www.ivas.homes/blog/3-easy-ways-to-find-the-right-lighting-solution-for-your-space/
+# Redirect 301 /electricals/blogs/detail/demystifying-bldc-technology-in-fans/ https://www.ivas.homes/blog/demystifying-bldc-technology-in-fans/
+# Redirect 301 /electricals/blogs/detail/4-tips-to-choose-the-right-ceiling-fan/ https://www.ivas.homes/blog/4-tips-to-choose-the-right-ceiling-fan/
+# Redirect 301 /electricals/blogs/detail/everything-you-need-to-know-about-led-bulbs/ https://www.ivas.homes/blog/everything-you-need-to-know-about-led-bulbs/
+
+# RewriteEngine On
+# RewriteBase /ivas-integration/
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)$ index.php/$1 [L]
