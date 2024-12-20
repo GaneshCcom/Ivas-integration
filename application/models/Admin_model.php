@@ -959,6 +959,15 @@ class Admin_model extends CI_Model {
         return $this->db->get('product');
 	}
 
+	public function getProductsByCategory($cat_id) {
+		$this->db->select('*'); // Replace '*' with specific product columns if needed
+		$this->db->from('product'); // Replace 'product' with your table name
+		$this->db->where('cat_id', $cat_id); // Ensure 'cat_id' is the foreign key in 'product' table
+	
+		// Convert the result to an array
+		return $this->db->get()->result_array();
+	}
+
 	function edit_product($productinfo, $id){
         $this->db->where('pro_id', $id);
         $this->db->update('product', $productinfo);
@@ -1583,28 +1592,38 @@ class Admin_model extends CI_Model {
 	
 		$results = [];
 	
-		// Search in 'category' table
-		$this->db->select('*');
-		$this->db->from('category');
-		$this->db->like('cat_name', $query);
-		$categoryResults = $this->db->get()->result_array();
-	
-		// Search in 'sub_category' table
-		$this->db->select('sub_cat_name as name, "Sub-Category" as type');
-		$this->db->from('sub_category');
-		$this->db->like('sub_cat_name', $query);
-		$subCategoryResults = $this->db->get()->result_array();
-	
-		// Search in 'product' table
-		$this->db->select('pro_name as name, "Product" as type');
-		$this->db->from('product');
-		$this->db->like('pro_name', $query);
-		$productResults = $this->db->get()->result_array();
-	
-		// Combine all results
-		$results = array_merge($categoryResults, $subCategoryResults, $productResults);
-	
-		return $results;
+		$this->db->select('cat_name as name, cat_id, "Category" as type');
+    $this->db->from('category');
+    $this->db->like('cat_name', $query);
+    $categoryResults = $this->db->get()->result_array();
+
+    // Search in 'sub_category' table
+    $this->db->select('sub_cat_name as name, sub_cat_id, "Sub-Category" as type');
+    $this->db->from('sub_category');
+    $this->db->like('sub_cat_name', $query);
+    $subCategoryResults = $this->db->get()->result_array();
+
+    // Search in 'product' table
+    $this->db->select('pro_name as name, pro_id, "Product" as type');
+    $this->db->from('product');
+    $this->db->like('pro_name', $query);
+    $productResults = $this->db->get()->result_array();
+
+    // Combine all results
+    $results = array_merge($categoryResults, $subCategoryResults, $productResults);
+
+    return $results;
+	}
+
+	function get_Category_by_Id($id){
+		// $this->db->where('cat_id', $id);
+        // return $this->db->get('category');
+		$query = $this->db->select('t1.*, t2.par_cat_name')
+		->from('category as t1') 
+		->join('parent_category as t2', 't1.par_id = t2.par_id', 'LEFT')
+		->WHERE ('cat_id', $id)
+		->get()->row_array();
+		return $query;
 	}
 	
 	

@@ -434,12 +434,53 @@
 
 				</div>
 			</div>
-			<div class="header-item-right me-5 ">
-				<form action="<?php echo base_url('SearchController/index'); ?>" method="get" style="display: inline;">
-					<input type="text" name="query" placeholder="Search..." value="<?php echo isset($query) ? $query : ''; ?>" />
-					<button type="submit">submit</button>
-				</form>
-			</div>
+			<div class="header">
+    <div class="header-item-right me-5">
+        <!-- Search Filter -->
+        <form action="<?php echo base_url('SearchController/index'); ?>" method="get" style="display: inline;">
+            <input type="text" name="query" placeholder="Search..." value="<?php echo isset($query) ? $query : ''; ?>" />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<div class="content">
+<?php if (isset($view_mode) && $view_mode === 'search_results'): ?>
+    <h3>Search Results for "<?php echo $query; ?>"</h3>
+    <?php if (!empty($results) && is_array($results)): ?>
+        <ul>
+            <?php foreach ($results as $result): ?>
+                <?php if (isset($result['type']) && $result['type'] === 'Category'): ?>
+                    <li>
+                        <a href="<?php echo base_url('SearchController/category/' . $result['cat_id']); ?>">
+                            <?php echo $result['name']; ?> (Category)
+                        </a>
+                    </li>
+                <?php elseif ($result['type'] === 'Sub-Category'): ?>
+                    <li><?php echo $result['name']; ?> (Sub-Category)</li>
+                <?php elseif ($result['type'] === 'Product'): ?>
+                    <li><?php echo $result['name']; ?> (Product)</li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>No results found for "<?php echo $query; ?>".</p>
+    <?php endif; ?>
+<?php elseif (isset($view_mode) && $view_mode === 'category_products'): ?>
+    <h3>Products in Category: <?php echo $category['cat_name']; ?></h3>
+    <?php if (!empty($products) && is_array($products)): ?>
+        <ul>
+            <?php foreach ($products as $product): ?>
+                <li><?php echo $product['pro_name']; ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>No products found in this category.</p>
+    <?php endif; ?>
+<?php endif; ?>
+</div>
+
+
 		</header>
 
 
