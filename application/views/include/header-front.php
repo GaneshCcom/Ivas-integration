@@ -25,9 +25,33 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+<!-- Font Awesome for Search Icon -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 
 <script type="text/javascript" src="<?php echo base_url(); ?>res/js/jquery-1.10.2.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    .suggestions {
+        border: 1px solid #ccc;
+        max-width: 300px;
+        margin-top: 5px;
+        background: #fff;
+        position: absolute;
+    }
+    .suggestions div {
+        padding: 8px;
+        cursor: pointer;
+    }
+    .suggestions div:hover {
+        background: #f0f0f0;
+    }
+</style>
 
 </head>
 
@@ -434,52 +458,91 @@
 
 				</div>
 			</div>
+			<!-- <div class="header">
+				<div class="header-item-right me-5">
+					<form  method="post" style="display: inline;">
+						<input type="text" name="query" placeholder="Search..." value="<?php echo isset($query) ? $query : ''; ?>" />
+						<button type="submit">Submit</button>
+					</form>
+				</div>
+			</div> -->
+			
 			<div class="header">
     <div class="header-item-right me-5">
-        <!-- Search Filter -->
-        <form action="<?php echo base_url('SearchController/index'); ?>" method="get" style="display: inline;">
-            <input type="text" name="query" placeholder="Search..." value="<?php echo isset($query) ? $query : ''; ?>" />
-            <button type="submit">Submit</button>
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Search..." autocomplete="off">
+            <div id="suggestions" class="suggestions"></div>
         </form>
     </div>
 </div>
 
-<div class="content">
-<?php if (isset($view_mode) && $view_mode === 'search_results'): ?>
-    <h3>Search Results for "<?php echo $query; ?>"</h3>
-    <?php if (!empty($results) && is_array($results)): ?>
-        <ul>
-            <?php foreach ($results as $result): ?>
-                <?php if (isset($result['type']) && $result['type'] === 'Category'): ?>
-                    <li>
-                        <a href="<?php echo base_url('SearchController/category/' . $result['cat_id']); ?>">
-                            <?php echo $result['name']; ?> (Category)
-                        </a>
-                    </li>
-                <?php elseif ($result['type'] === 'Sub-Category'): ?>
-                    <li><?php echo $result['name']; ?> (Sub-Category)</li>
-                <?php elseif ($result['type'] === 'Product'): ?>
-                    <li><?php echo $result['name']; ?> (Product)</li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p>No results found for "<?php echo $query; ?>".</p>
-    <?php endif; ?>
-<?php elseif (isset($view_mode) && $view_mode === 'category_products'): ?>
-    <h3>Products in Category: <?php echo $category['cat_name']; ?></h3>
-    <?php if (!empty($products) && is_array($products)): ?>
-        <ul>
-            <?php foreach ($products as $product): ?>
-                <li><?php echo $product['pro_name']; ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p>No products found in this category.</p>
-    <?php endif; ?>
-<?php endif; ?>
-</div>
 
+			<!-- <div class="content">
+				<?php //if (isset($view_mode) && $view_mode === 'search_results'): ?>
+					<h3>Search Results for "<?php //echo $query; ?>"</h3>
+					<?php //if (!empty($results) && is_array($results)): ?>
+						<ul>
+							<?php //foreach ($results as $result): ?>
+								<?php// if (isset($result['type']) && $result['type'] === 'Category'): ?>
+									<li>
+										<?php //
+									//	if (isset($category['par_cat_slug'], $category['cat_slug'], $category['sub_cat_slug'])): ?>
+											<a href="<?php //echo base_url($category['par_cat_slug'] . '/' . $category['cat_slug'] . '/category/' . $category['sub_cat_slug']); ?>">
+												<?php //echo $result['name']; ?> (Category)
+											</a>
+										<?php //else: ?>
+											<?php //echo $result['name']; ?> (Category - Missing Slug Information)
+										<?php //endif; ?>
+									</li>
+								<?php //elseif ($result['type'] === 'Sub-Category'): ?>
+									<li><?php //echo $result['name']; ?> (Sub-Category)</li>
+								<?php// elseif ($result['type'] === 'Product'): ?>
+									<li><?php //echo $result['name']; ?> (Product)</li>
+								<?php// endif; ?>
+							<?php //endforeach; ?>
+						</ul>
+					<?php// else: ?>
+						<p>No results found for "<?php// echo $query; ?>".</p>
+					<?php //endif; ?>
+				<?php //elseif (isset($view_mode) && $view_mode === 'category_products'): ?>
+					<h3>Products in Category: <?php //echo $category['cat_name']; ?></h3>
+					<?php //if (!empty($products) && is_array($products)): ?>
+						<ul>
+							<?php //foreach ($products as $product): ?>
+								<li><?php //echo $product['pro_name']; ?></li>
+							<?php //endforeach; ?>
+						</ul>
+					<?php //else: ?>
+						<p>No products found in this category.</p>
+					<?php //endif; ?>
+				<?php //endif; ?>
+			</div> -->
+
+			
+
+			<!-- <div class="header d-flex justify-content-end p-3 bg-light">
+				<i id="search-icon" class="fas fa-search fa-lg" data-bs-toggle="modal" data-bs-target="#searchModal"></i>
+			</div>
+
+			<div class="modal " id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="searchModalLabel">Search</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<input type="text" id="search-input" class="form-control" placeholder="Enter your search query">
+							<button id="search-btn" class="btn btn-success mt-2">Search</button>
+						</div>
+						<div class="modal-footer">
+							<div id="search-results"></div>
+						</div>
+					</div>
+				</div>
+			</div> -->
 
 		</header>
 
@@ -497,3 +560,84 @@
 	<a href="https://www.ivas.homes/download-catalogue/">Download Catalogue</a>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- <script>
+        $(document).ready(function () {
+            // Open modal on search icon click
+            $('#search-icon').click(function () {
+                $('#searchModal').modal('show');
+            });
+
+            // Perform search using AJAX
+            $('#search-btn').click(function () {
+                const query = $('#search-input').val();
+                if (query.trim() === "") {
+                    alert("Please enter a search query");
+                    return;
+                }
+                $.ajax({
+                    
+                    type: 'POST',
+                    data: { query: query },
+                    success: function (response) {
+                        $('#search-results').html(response);
+                    },
+                    error: function () {
+                        $('#search-results').html('<p class="text-danger">An error occurred. Please try again later.</p>');
+                    }
+                });
+            });
+        });
+</script> -->
+
+<script>
+    $(document).ready(function() {
+        let categories = []; // To store category data
+
+        // Fetch categories once when the page loads
+        $.ajax({
+            url: "<?= base_url('search/category') ?>", // Adjust URL as needed
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+				console.log("API Response:", response);
+                categories = response.map(item => item.cat_name); // Store only cat_name
+				console.log("Categories Array:", categories);
+            },
+            error: function() {
+                console.error("Error fetching categories");
+            }
+        });
+
+        // Filter categories based on user input
+        $('#searchInput').on('keyup', function() {
+            let keyword = $(this).val().toLowerCase();
+            if (keyword.length > 0) {
+                let filtered = categories.filter(cat_name =>
+                    cat_name.toLowerCase().includes(keyword)
+                );
+				console.log("Filtered Suggestions:", filtered);
+
+                let suggestions = '';
+                if (filtered.length > 0) {
+                    $.each(filtered, function(index, cat_name) {
+                        suggestions += `<div>${cat_name}</div>`;
+                    });
+                } else {
+                    suggestions = '<div>No suggestions found</div>';
+                }
+                $('#suggestions').html(suggestions).show();
+            } else {
+                $('#suggestions').hide();
+            }
+        });
+
+        // Set input value when a suggestion is clicked
+        $(document).on('click', '.suggestions div', function() {
+            $('#searchInput').val($(this).text());
+            $('#suggestions').hide();
+        });
+    });
+</script>

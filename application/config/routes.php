@@ -109,3 +109,7 @@ $route['modularkitchen/category/(:any)']              = 'modularkitchen/category
 $route['quartz/category/(:any)'] = 'quartz/category/$1';
 $route['product/(:any)'] = 'product/index/$1';
 
+// $route['search'] = 'SearchController/index'; // Route for the main search page
+$route['search/category'] = 'SearchController/category'; // Route for fetching categories via AJAX
+
+

@@ -1593,39 +1593,46 @@ class Admin_model extends CI_Model {
 		$results = [];
 	
 		$this->db->select('cat_name as name, cat_id, "Category" as type');
-    $this->db->from('category');
-    $this->db->like('cat_name', $query);
-    $categoryResults = $this->db->get()->result_array();
+		$this->db->from('category');
+		$this->db->like('cat_name', $query);
+		$categoryResults = $this->db->get()->result_array();
 
-    // Search in 'sub_category' table
-    $this->db->select('sub_cat_name as name, sub_cat_id, "Sub-Category" as type');
-    $this->db->from('sub_category');
-    $this->db->like('sub_cat_name', $query);
-    $subCategoryResults = $this->db->get()->result_array();
+		// Search in 'sub_category' table
+		$this->db->select('sub_cat_name as name, sub_cat_id, "Sub-Category" as type');
+		$this->db->from('sub_category');
+		$this->db->like('sub_cat_name', $query);
+		$subCategoryResults = $this->db->get()->result_array();
 
-    // Search in 'product' table
-    $this->db->select('pro_name as name, pro_id, "Product" as type');
-    $this->db->from('product');
-    $this->db->like('pro_name', $query);
-    $productResults = $this->db->get()->result_array();
+		// Search in 'product' table
+		$this->db->select('pro_name as name, pro_id, "Product" as type');
+		$this->db->from('product');
+		$this->db->like('pro_name', $query);
+		$productResults = $this->db->get()->result_array();
 
-    // Combine all results
-    $results = array_merge($categoryResults, $subCategoryResults, $productResults);
+		// Combine all results
+		$results = array_merge($categoryResults, $subCategoryResults, $productResults);
 
-    return $results;
+		return $results;
 	}
 
 	function get_Category_by_Id($id){
 		// $this->db->where('cat_id', $id);
         // return $this->db->get('category');
-		$query = $this->db->select('t1.*, t2.par_cat_name')
+		$query = $this->db->select('t1.*, t2.par_cat_slug, t3.sub_cat_slug')
 		->from('category as t1') 
 		->join('parent_category as t2', 't1.par_id = t2.par_id', 'LEFT')
-		->WHERE ('cat_id', $id)
+		->join('sub_category as t3', 't1.cat_id = t3.cat_id', 'LEFT')
+		->WHERE ('t1.cat_id', $id)
 		->get()->row_array();
 		return $query;
 	}
-	
+
+	public function get_Category_by_keyword(){
+		$this->db->like('cat_name', $keyword);
+		$this->db->select('cat_name');
+		$query = $this->db->get('categories'); // Replace 'categories' with your actual table name
+		return $query->result_array();
+	}
 	
 
 }
